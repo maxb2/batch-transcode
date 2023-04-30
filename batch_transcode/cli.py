@@ -129,6 +129,8 @@ def batch(
     if move_source is not None and not move_source.is_dir():
         raise FileNotFoundError(f"{move_source} is not an existing directory!")
 
+    errs = []
+
     for vid_path in get_non_hevc_videos(directory):
         transcode_files = TranscodeFiles.new(vid_path)
 
@@ -136,8 +138,21 @@ def batch(
             # output file exists, so we skip
             continue
 
-        transcode_result = transcode_vid(transcode_files)
-        make_contact_sheet(transcode_result.files.output)
+        transcode_result = transcode_vid(transcode_files, run_check=False)
+
+        if not transcode_result.ok():
+            errs.append(transcode_result)
+            if transcode_result.files.output.video.is_file():
+                os.remove(transcode_result.files.output.video)
+            continue
+
+        vcs_result = make_contact_sheet(transcode_result.files.output, run_check=False)
+
+        if not vcs_result.ok():
+            errs.append(vcs_result)
+            if vcs_result.video.vcs.is_file():
+                os.remove(vcs_result.video.vcs)
+            continue
 
         if move_source is not None:
             typer.echo(f"Moving {transcode_result.files.input} to {move_source}...")
@@ -153,6 +168,11 @@ def batch(
             typer.echo(f"Removing {transcode_files}...")
             os.remove(transcode_result.files.input.video)
             os.remove(transcode_result.files.input.vcs)
+
+    if errs:
+        typer.echo("Errors happened", err=True)
+        typer.echo(errs, err=True)
+        raise typer.Exit(1)
 
 
 @app.command(help="Find non-HEVC video files.")

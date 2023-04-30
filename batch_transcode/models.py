@@ -67,7 +67,7 @@ class AbstractResult:
 
     result: CompletedProcess
 
-    def is_ok(self) -> bool:
+    def ok(self) -> bool:  # pylint: disable=invalid-name
         """Check if process was successful.
 
         Returns
