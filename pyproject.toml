@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "batch-transcode"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "batch_transcode"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+vcsi = "^7.0.13"
+pymediainfo = "^6.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+isort = "^5.12.0"
+ruff = "^0.0.263"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
