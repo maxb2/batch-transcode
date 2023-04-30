@@ -76,7 +76,7 @@ def get_non_hevc_videos(
     """
 
     def fast(gen: Generator) -> Generator:
-        return (f for f in gen if not f.endswith("x265.mp4"))
+        return (f for f in gen if not str(f).endswith("x265.mp4"))
 
     def accurate(gen: Generator) -> Generator:
         return (f for f in gen if not is_hevc(f))

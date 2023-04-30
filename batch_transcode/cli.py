@@ -155,7 +155,7 @@ def batch(
             os.remove(transcode_result.files.input.vcs)
 
 
-@app.command()
+@app.command(help="Find non-HEVC video files.")
 def find(
     directory: Path = typer.Argument(...),
     method: HevcDiscriminantMethods = typer.Option(
