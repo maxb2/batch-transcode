@@ -100,7 +100,7 @@ class HevcDiscriminantMethods(Enum):
     SEMI_ACCURATE = "semi-accurate"
 
 
-def get_non_hevc_mp4(
+def get_non_hevc_videos(
     dir: Path,
     recursive=False,
     method: HevcDiscriminantMethods = HevcDiscriminantMethods.FAST,

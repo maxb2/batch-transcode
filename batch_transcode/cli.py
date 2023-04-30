@@ -5,7 +5,7 @@ from pathlib import Path
 import typer
 
 from batch_transcode import (
-    get_non_hevc_mp4,
+    get_non_hevc_videos,
     get_videos,
     make_contact_sheet,
     transcode_vid,
@@ -93,14 +93,15 @@ def batch(
     if move_source is not None and not move_source.is_dir():
         raise Exception(f"{move_source} is not an existing directory!")
 
-    to_convert = get_non_hevc_mp4(dir, recursive=recursive)
-
-    for vid_path in to_convert:
+    for vid_path in get_non_hevc_videos(dir, recursive=recursive):
         transcode_files = TranscodeFiles.new(vid_path)
 
-        if not transcode_files.output.video.is_file():
-            transcode_result = transcode_vid(transcode_files)
-            make_contact_sheet(transcode_result.files.output)
+        if transcode_files.output.video.is_file():
+            # output file exists, so we skip
+            continue
+
+        transcode_result = transcode_vid(transcode_files)
+        make_contact_sheet(transcode_result.files.output)
 
         if move_source is not None:
             typer.echo(f"Moving {transcode_result.files.input} to {move_source}...")
@@ -131,7 +132,7 @@ def find(
     ),
     limit: int = typer.Option(None, help="Limit the number of files to print."),
 ):
-    vids = get_non_hevc_mp4(dir, recursive=recursive, method=method)
+    vids = get_non_hevc_videos(dir, recursive=recursive, method=method)
     _iter = 1
     for vid in vids:
         if limit is not None and _iter > limit:
