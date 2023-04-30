@@ -6,10 +6,15 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 packages = [{include = "batch_transcode"}]
 
+[tool.poetry.scripts]
+batch-transcode = 'batch_transcode.cli:app'
+
 [tool.poetry.dependencies]
 python = "^3.10"
 vcsi = "^7.0.13"
 pymediainfo = "^6.0.1"
+typer = "^0.7.0"
+rich = "^13.3.5"
 
 
 [tool.poetry.group.dev.dependencies]
